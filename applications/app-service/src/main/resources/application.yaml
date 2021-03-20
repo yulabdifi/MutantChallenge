@@ -1,0 +1,16 @@
+##Spring Configuration
+server:
+  port: 8080
+spring:
+  application:
+    name: MutantChallenge
+  devtools:
+    add-properties: false
+  profiles:
+    include:
+    
+dynamodb:
+  endpoint: 
+  tbl-name:
+    mutant: 
+
