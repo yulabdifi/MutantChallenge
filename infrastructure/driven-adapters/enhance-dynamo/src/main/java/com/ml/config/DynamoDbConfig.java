@@ -7,10 +7,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClientBuilder;
 
+@Setter
 @Configuration
 public class DynamoDbConfig {
 
@@ -29,8 +31,7 @@ public class DynamoDbConfig {
 	@Bean
 	@Primary
 	public DynamoDbEnhancedAsyncClient getDynamoDbEnhancedAsyncClient() {
-		return DynamoDbEnhancedAsyncClient.builder()
-				.dynamoDbClient(getDynamoDbAsyncClient()).build();
+		return DynamoDbEnhancedAsyncClient.builder().dynamoDbClient(getDynamoDbAsyncClient()).build();
 	}
 
 }
