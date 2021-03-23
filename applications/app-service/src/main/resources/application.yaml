@@ -10,7 +10,7 @@ spring:
     include:
     
 dynamodb:
-  endpoint: 
+  endpoint: http://localhost:8000
   tbl-name:
-    mutant: 
+    mutant: MutantCheck
 

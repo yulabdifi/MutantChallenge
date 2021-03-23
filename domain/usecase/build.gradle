@@ -1,3 +1,5 @@
 dependencies {
     compile project(':model')
+    
+    implementation  libs.unit_tests
 }

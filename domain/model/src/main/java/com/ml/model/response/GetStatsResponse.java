@@ -1,6 +1,6 @@
 package com.ml.model.response;
 
-import com.ml.model.MutantVerificationStat;
+import com.ml.model.MutantCheckupStat;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @Data
 public class GetStatsResponse {
 
-	private MutantVerificationStat data;
+	private MutantCheckupStat data;
 
 }

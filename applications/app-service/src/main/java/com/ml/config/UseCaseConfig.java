@@ -4,20 +4,20 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.ml.model.gateways.MutantRepoGateway;
-import com.ml.usecase.GetStatsUseCase;
-import com.ml.usecase.MutantVerifyUseCase;
+import com.ml.usecase.GetCheckUpStatUseCase;
+import com.ml.usecase.MutantCheckUseCase;
 
 @Configuration
 public class UseCaseConfig {
 
 	@Bean
-	public MutantVerifyUseCase getMutantVerifyUseCase(MutantRepoGateway mutantRepoGateway) {
-		return new MutantVerifyUseCase(mutantRepoGateway);
+	public MutantCheckUseCase getMutantVerifyUseCase(MutantRepoGateway mutantRepoGateway) {
+		return new MutantCheckUseCase(mutantRepoGateway);
 	}
 
 	@Bean
-	public GetStatsUseCase getGetStatsUseCase(MutantRepoGateway mutantRepoGateway) {
-		return new GetStatsUseCase(mutantRepoGateway);
+	public GetCheckUpStatUseCase getGetStatsUseCase(MutantRepoGateway mutantRepoGateway) {
+		return new GetCheckUpStatUseCase(mutantRepoGateway);
 	}
 
 }

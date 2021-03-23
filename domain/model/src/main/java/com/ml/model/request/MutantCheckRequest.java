@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class MutantVerifyRequest {
+public class MutantCheckRequest {
 
 	private List<String> dna;
 
