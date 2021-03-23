@@ -15,6 +15,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.ml.model.MutantCheckupStat;
 import com.ml.model.request.MutantCheckRequest;
+import com.ml.model.response.ErrorResponse;
 import com.ml.model.response.GetStatsResponse;
 import com.ml.model.util.Constants;
 import com.ml.usecase.GetCheckUpStatUseCase;
@@ -23,8 +24,7 @@ import com.ml.usecase.MutantCheckUseCase;
 import reactor.core.publisher.Mono;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
-		"spring.cloud.config.enabled=false" })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class RouterTest {
 
 	@Autowired
@@ -62,11 +62,25 @@ public class RouterTest {
 	}
 
 	@Test
-	public void statShouldReturnOkWhenGetCheckUpStatReturnRatio05() {
-		MutantCheckupStat stat = MutantCheckupStat.builder().countHumanDna(1).countMutantDna(1).ratio(0.5).build();
+	public void statShouldReturnOkWhenGetCheckUpStatReturnRatio1() {
+		MutantCheckupStat stat = MutantCheckupStat.builder().countHumanDna(1).countMutantDna(1).ratio(1).build();
 		Mockito.when(getCheckUpStatUseCase.getCheckUpStat()).thenReturn(Mono.just(stat));
 
 		webTestClient.get().uri(Constants.ROUTE_GET_CHECKUP_STAT).accept(MediaType.APPLICATION_JSON).exchange()
 				.expectStatus().isOk().expectBody(GetStatsResponse.class);
+	}
+
+	@Test
+	public void statShouldReturnErrorResponseWhenUseCaseThrowError() {
+		Mockito.when(getCheckUpStatUseCase.getCheckUpStat()).thenReturn(Mono.error(new Exception("Error en consulta")));
+
+		webTestClient.get().uri(Constants.ROUTE_GET_CHECKUP_STAT).accept(MediaType.APPLICATION_JSON).exchange()
+				.expectStatus().is5xxServerError().expectBody(ErrorResponse.class);
+	}
+
+	@Test
+	public void healthShouldReturnOk() {
+		webTestClient.get().uri(Constants.ROUTE_HEALTH).accept(MediaType.APPLICATION_JSON).exchange().expectStatus()
+				.isOk();
 	}
 }

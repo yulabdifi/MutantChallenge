@@ -7,6 +7,12 @@ import com.ml.model.gateways.MutantRepoGateway;
 import com.ml.usecase.GetCheckUpStatUseCase;
 import com.ml.usecase.MutantCheckUseCase;
 
+/**
+ * Clase que expone los casos de uso como bean para ser usados por el handler
+ * 
+ * @author ybarraza
+ *
+ */
 @Configuration
 public class UseCaseConfig {
 

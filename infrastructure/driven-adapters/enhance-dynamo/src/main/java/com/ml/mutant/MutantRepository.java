@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,8 @@ public class MutantRepository implements MutantRepoGateway {
 	private final DynamoDbAsyncClient asyncClient;
 	private final String dynamoDbTableName;
 
+	private final Logger logger = LoggerFactory.getLogger(MutantRepository.class);
+
 	public MutantRepository(DynamoDbAsyncClient asyncClient, DynamoDbEnhancedAsyncClient enhancedAsyncClient,
 			@Value("${dynamodb.tbl-name.mutant}") String dynamoDbTableName) {
 		this.asyncClient = asyncClient;
@@ -39,20 +43,40 @@ public class MutantRepository implements MutantRepoGateway {
 		this.mutantTable = enhancedAsyncClient.table(dynamoDbTableName, TableSchema.fromBean(MutantCheckupDTO.class));
 	}
 
+	/**
+	 * Saves mutant check up
+	 * 
+	 * @param Mutant
+	 * @return Mono<Boolean>
+	 */
 	public Mono<Boolean> saveMutant(Mutant mutant) {
+		// Se mapea a la entidad y se adiciona a la tabla de manera asíncrona
+		// En caso de error se imprime dicho error y se retonar false
 		return toEntity(mutant).flatMap(m -> Mono.fromFuture(mutantTable.putItem(m))).thenReturn(Boolean.TRUE)
-				.doOnError(ex -> ex.printStackTrace()).onErrorReturn(Boolean.FALSE);
+				.doOnError(t -> logger.error(t.getMessage(), t)).onErrorReturn(Boolean.FALSE);
 	}
 
+	/**
+	 * Gets mutant checkup Stat (number of mutant and total of records)
+	 * 
+	 * @return Mono<MutantCount>
+	 */
 	public Mono<MutantCount> getMutantCheckupStat() {
+		// Se crea un scan request a la tabla con el filtro sobre el campo mutant
 		ScanRequest scanRequest = ScanRequest.builder().tableName(dynamoDbTableName).scanFilter(loadFilterIsMutant())
 				.build();
-
+		// Se obtienen los items que cumplieron con el filtro y el total de la busqueda
+		// que sera igual al total de registros
 		return Mono.fromFuture(asyncClient.scan(scanRequest)).map(scanResponse -> {
 			return MutantCount.builder().mutantDna(scanResponse.count()).total(scanResponse.scannedCount()).build();
 		});
 	}
 
+	/**
+	 * Load filter to validate isMutant field equals true
+	 * 
+	 * @return Map<String, Condition>
+	 */
 	public Map<String, Condition> loadFilterIsMutant() {
 		List<AttributeValue> list = new ArrayList<>();
 		list.add(AttributeValue.builder().bool(Boolean.TRUE).build());
@@ -62,6 +86,12 @@ public class MutantRepository implements MutantRepoGateway {
 		return filter;
 	}
 
+	/**
+	 * Map mutant to entity MutantCheckupDTO
+	 * 
+	 * @param mutant
+	 * @return Mono<MutantCheckupDTO>
+	 */
 	private Mono<MutantCheckupDTO> toEntity(Mutant mutant) {
 		return Mono.justOrEmpty(mutant)
 				.map(m -> MutantCheckupDTO.builder().dna(m.getDna()).mutant(m.isMutant()).build());

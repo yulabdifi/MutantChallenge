@@ -25,6 +25,7 @@ build/
 
 **/build/
 /.settings
+.settings/
 /applications/app-service/.settings
 /domain/model/.settings
 /infrastructure/driven-adapters/enhance-dynamo/.settings

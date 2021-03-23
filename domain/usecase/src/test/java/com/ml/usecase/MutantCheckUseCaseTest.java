@@ -25,15 +25,28 @@ public class MutantCheckUseCaseTest {
 	@Test
 	public void verifyHumanIsMutantShouldReturnTrueWhenContains4LetterConsecutive() {
 		String[] secuencias = { "ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG" };
-		boolean isHumanMock = Boolean.TRUE;
+		boolean isHumanToReturn = Boolean.TRUE;
 
+		Mono<Boolean> isHuman = saveMutantTest(secuencias, isHumanToReturn);
+		StepVerifier.create(isHuman).expectNextMatches(b -> b == isHumanToReturn).verifyComplete();
+	}
+
+	@Test
+	public void verifyHumanIsMutantShouldReturnFalseWhenDontContains4LetterConsecutive() {
+		String[] secuencias = { "ATGCGA", "CAGTGC", "TTATTT", "AGACGG", "GCGTCA", "TCACTG" };
+		boolean isHumanToReturn = Boolean.FALSE;
+
+		Mono<Boolean> isHuman = saveMutantTest(secuencias, isHumanToReturn);
+		StepVerifier.create(isHuman).expectNextMatches(b -> b == isHumanToReturn).verifyComplete();
+	}
+
+	private Mono<Boolean> saveMutantTest(String[] secuencias, boolean isHumanToReturn) {
 		String strDna = Stream.of(secuencias).map(Object::toString).collect(Collectors.joining(Constants.HYPHEN));
-		Mockito.when(mutantRepoGateway.saveMutant(Mutant.builder().dna(strDna).isMutant(isHumanMock).build()))
-				.thenReturn(Mono.just(isHumanMock));
+		Mockito.when(mutantRepoGateway.saveMutant(Mutant.builder().dna(strDna).isMutant(isHumanToReturn).build()))
+				.thenReturn(Mono.just(Boolean.TRUE));
 
 		MutantCheckUseCase useCase = new MutantCheckUseCase(mutantRepoGateway);
-		Mono<Boolean> isHuman = useCase.verifyHumanIsMutant(Stream.of(secuencias).collect(Collectors.toList()));
-		StepVerifier.create(isHuman).expectNextMatches(b -> b).verifyComplete();
+		return useCase.verifyHumanIsMutant(Stream.of(secuencias).collect(Collectors.toList()));
 	}
 
 }

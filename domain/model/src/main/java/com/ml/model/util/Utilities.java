@@ -8,6 +8,12 @@ import reactor.core.publisher.Mono;
 @UtilityClass
 public class Utilities {
 
+	/**
+	 * Transforma una lista de string en una matriz de chars
+	 * 
+	 * @param list is List<String>
+	 * @return Mono<char[][]>
+	 */
 	public static Mono<char[][]> listToMatrix(List<String> list) {
 		if (list != null && !list.isEmpty()) {
 			char[][] matrix = new char[list.size()][list.get(0).length()];
