@@ -9,7 +9,6 @@ bin/
 .springBeans
 .recommenders/
 .apt_generated/
-.settings/
 
 .project
 .classpath
@@ -25,3 +24,4 @@ out/
 build/
 
 **/build/
+/.settings
