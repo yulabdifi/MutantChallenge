@@ -48,13 +48,13 @@ public class MutantRepositoryTest {
 	}
 
 	@Test
-	public void saveMutantShouldReturnFalseWhenPutItemThrowError() {
-
-		MutantCheckupDTO dto = MutantCheckupDTO.builder().dna("ATGCGA-CAGTGC").isMutant(Boolean.FALSE).build();
+	public void saveMutantShouldReturnFalseWhenPutItemIsSuccess() {
+		Mutant mutant = getMutantMock();
+		MutantCheckupDTO dto = MutantCheckupDTO.builder().dna(mutant.getDna()).mutant(mutant.isMutant()).build();
 		Mockito.when(mutantTable.putItem(dto)).thenReturn(CompletableFuture.allOf());
 
-		Mono<Boolean> res = repository.saveMutant(getMutantMock());
-		StepVerifier.create(res).expectNextMatches(b -> !b).verifyComplete();
+		Mono<Boolean> res = repository.saveMutant(mutant);
+		StepVerifier.create(res).expectNextMatches(b -> b).verifyComplete();
 	}
 
 	@Test

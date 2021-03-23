@@ -20,7 +20,7 @@ public class GetCheckUpStatUseCaseTest {
 	MutantRepoGateway mutantRepoGateway;
 
 	@Test
-	public void test() {
+	public void getCheckUpStatUseCaseShouldReturnRatio0_4WhenMutantIs40AndTotal140() {
 		MutantCount count = MutantCount.builder().mutantDna(40).total(140).build();
 		Mockito.when(mutantRepoGateway.getMutantCheckupStat()).thenReturn(Mono.just(count));
 

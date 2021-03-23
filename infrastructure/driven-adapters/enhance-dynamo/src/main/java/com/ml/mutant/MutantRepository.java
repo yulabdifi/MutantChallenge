@@ -26,7 +26,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 @Component
 public class MutantRepository implements MutantRepoGateway {
 
-	private static final String FILTER_IS_MUTANT = "isMutant";
+	private static final String FILTER_IS_MUTANT = "mutant";
 
 	private final DynamoDbAsyncTable<MutantCheckupDTO> mutantTable;
 	private final DynamoDbAsyncClient asyncClient;
@@ -48,8 +48,9 @@ public class MutantRepository implements MutantRepoGateway {
 		ScanRequest scanRequest = ScanRequest.builder().tableName(dynamoDbTableName).scanFilter(loadFilterIsMutant())
 				.build();
 
-		return Mono.fromFuture(asyncClient.scan(scanRequest)).map(scanResponse -> MutantCount.builder()
-				.mutantDna(scanResponse.count()).total(scanResponse.scannedCount()).build());
+		return Mono.fromFuture(asyncClient.scan(scanRequest)).map(scanResponse -> {
+			return MutantCount.builder().mutantDna(scanResponse.count()).total(scanResponse.scannedCount()).build();
+		});
 	}
 
 	public Map<String, Condition> loadFilterIsMutant() {
@@ -63,7 +64,7 @@ public class MutantRepository implements MutantRepoGateway {
 
 	private Mono<MutantCheckupDTO> toEntity(Mutant mutant) {
 		return Mono.justOrEmpty(mutant)
-				.map(m -> MutantCheckupDTO.builder().dna(m.getDna()).isMutant(m.isMutant()).build());
+				.map(m -> MutantCheckupDTO.builder().dna(m.getDna()).mutant(m.isMutant()).build());
 	}
 
 }

@@ -1,6 +1,5 @@
 buildscript {
 	ext {
-		cleanArchitectureVersion = '1.8.8'
 		springBootVersion = '2.4.2'
 		sonarVersion = '3.0'
 		jacocoVersion = '0.8.5'
@@ -9,7 +8,6 @@ buildscript {
 }
 
 plugins {
-	id 'co.com.bancolombia.cleanArchitecture' version "${cleanArchitectureVersion}"
 	id 'org.springframework.boot' version "${springBootVersion}"
 	id 'org.sonarqube' version "${sonarVersion}"
 	id 'jacoco'

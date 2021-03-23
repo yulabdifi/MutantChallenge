@@ -17,13 +17,12 @@ public class MutantCheckUseCase {
 	private final MutantRepoGateway mutantRepoGateway;
 
 	public Mono<Boolean> verifyHumanIsMutant(List<String> dna) {
-		return Utilities.listToMatrix(dna).map(matrix -> isMutant(matrix)).doOnSuccess(b -> saveMutant(dna, b));
+		return Utilities.listToMatrix(dna).map(matrix -> isMutant(matrix)).flatMap(b -> saveMutant(dna, b));
 	}
 
 	private Mono<Boolean> saveMutant(List<String> dna, boolean isMutant) {
 		String strDna = dna.stream().map(Object::toString).collect(Collectors.joining(Constants.HYPHEN));
-
-		return mutantRepoGateway.saveMutant(Mutant.builder().dna(strDna).isMutant(isMutant).build());
+		return mutantRepoGateway.saveMutant(Mutant.builder().dna(strDna).isMutant(isMutant).build()).map(b -> isMutant);
 	}
 
 	private boolean isMutant(char[][] matrix) {
@@ -80,7 +79,7 @@ public class MutantCheckUseCase {
 		if (isRepeated) {
 			numRepetitions++;
 		}
-		
+
 		return numRepetitions;
 	}
 
