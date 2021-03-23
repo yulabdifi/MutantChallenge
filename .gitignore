@@ -25,3 +25,7 @@ build/
 
 **/build/
 /.settings
+/applications/app-service/.settings
+/domain/model/.settings
+/infrastructure/driven-adapters/enhance-dynamo/.settings
+/infrastructure/entry-points/reactive-web/.settings
